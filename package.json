@@ -1,9 +1,11 @@
 {
   "devDependencies": {
     "chai": "^4.5.0",
+    "esbuild": "^0.27.2",
     "mocha": "^9.2.2"
   },
   "scripts": {
+    "build": "esbuild --watch --bundle test/browser/main.js --outfile=test/browser/bundle.js",
     "test": "mocha"
   }
 }
