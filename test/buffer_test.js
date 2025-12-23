@@ -9,6 +9,13 @@ function randomBytes (size) {
   return array.map(() => Math.floor(Math.random() * 0x100))
 }
 
+function randomString (size) {
+  let length = Math.floor(Math.random() * size)
+  let cps = new Array(length).fill(0)
+  cps = cps.map(() => Math.floor(Math.random() * 0x20000))
+  return String.fromCodePoint(...cps)
+}
+
 function assertBuffer (buf, bytes) {
   assert.equal(buf.length, bytes.length)
   assert(bytes.every((b, i) => b === buf[i]))
@@ -93,6 +100,14 @@ describe('Buffer', () => {
     it('encodes 4-byte codepoints', () => {
       let buf = Buffer.from([0x6c, 0x6f, 0x6f, 0x6b, 0x3a, 0x20, 0xf0, 0x9f, 0x98, 0xb1, 0x21])
       assert.equal(buf.toString('utf8'), 'look: 😱!')
+    })
+
+    it('converts to and from utf8', () => {
+      for (let i = 0; i < 100; i++) {
+        let str = randomString(200)
+        let buf = Buffer.from(str, 'utf8')
+        assert.equal(buf.toString('utf8'), str)
+      }
     })
   })
 })
