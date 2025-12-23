@@ -49,4 +49,50 @@ describe('Buffer', () => {
       }
     })
   })
+
+  describe('utf8', () => {
+    it('decodes ASCII codepoints', () => {
+      let buf = Buffer.from('abc123()', 'utf8')
+      let bytes = [0x61, 0x62, 0x63, 0x31, 0x32, 0x33, 0x28, 0x29]
+      assertBuffer(buf, bytes)
+    })
+
+    it('encodes ASCII codepoints', () => {
+      let buf = Buffer.from([0x61, 0x62, 0x63, 0x31, 0x32, 0x33, 0x28, 0x29])
+      assert.equal(buf.toString('utf8'), 'abc123()')
+    })
+
+    it('decodes 2-byte codepoints', () => {
+      let buf = Buffer.from('£§±ɚߠ', 'utf8')
+      let bytes = [0xc2, 0xa3, 0xc2, 0xa7, 0xc2, 0xb1, 0xc9, 0x9a, 0xdf, 0xa0]
+      assertBuffer(buf, bytes)
+    })
+
+    it('encodes 2-byte codepoints', () => {
+      let buf = Buffer.from([0xc2, 0xa3, 0xc2, 0xa7, 0xc2, 0xb1, 0xc9, 0x9a, 0xdf, 0xa0])
+      assert.equal(buf.toString('utf8'), '£§±ɚߠ')
+    })
+
+    it('decodes 3-byte codepoints', () => {
+      let buf = Buffer.from('ॡန〛亏', 'utf8')
+      let bytes = [0xe0, 0xa5, 0xa1, 0xe1, 0x80, 0x94, 0xe3, 0x80, 0x9b, 0xe4, 0xba, 0x8f]
+      assertBuffer(buf, bytes)
+    })
+
+    it('encodes 3-byte codepoints', () => {
+      let buf = Buffer.from([0xe0, 0xa5, 0xa1, 0xe1, 0x80, 0x94, 0xe3, 0x80, 0x9b, 0xe4, 0xba, 0x8f])
+      assert.equal(buf.toString('utf8'), 'ॡန〛亏')
+    })
+
+    it('decodes 4-byte codepoints', () => {
+      let buf = Buffer.from('look: 😱!', 'utf8')
+      let bytes = [0x6c, 0x6f, 0x6f, 0x6b, 0x3a, 0x20, 0xf0, 0x9f, 0x98, 0xb1, 0x21]
+      assertBuffer(buf, bytes)
+    })
+
+    it('encodes 4-byte codepoints', () => {
+      let buf = Buffer.from([0x6c, 0x6f, 0x6f, 0x6b, 0x3a, 0x20, 0xf0, 0x9f, 0x98, 0xb1, 0x21])
+      assert.equal(buf.toString('utf8'), 'look: 😱!')
+    })
+  })
 })
