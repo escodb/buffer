@@ -35,7 +35,7 @@ function assertBuffer (buf, bytes) {
 
 const HELLO_WORLD = [0x68, 0x65, 0x6c, 0x6c, 0x6f, 0x20, 0x77, 0x6f, 0x72, 0x6c, 0x64]
 
-function spec (name, { Buffer }) {
+function spec (name, Buffer) {
   describe(`Buffer: ${name}`, () => {
     describe('base64', () => {
       it('encodes to base64', () => {
@@ -61,10 +61,41 @@ function spec (name, { Buffer }) {
           let buf = Buffer.from(bytes)
 
           let str = buf.toString('base64')
-          assert.equal(str.length % 4, 0)
+          assert.equal(str.length, 4 * Math.ceil(buf.length / 3))
           assert.match(str, /^[A-Za-z0-9+/]*={0,2}$/)
 
           let parsed = Buffer.from(str, 'base64')
+          assertBuffer(parsed, bytes)
+        }
+      })
+    })
+
+    describe('hex', () => {
+      it('encodes to hex', () => {
+        let buf = Buffer.from(HELLO_WORLD)
+        assert.equal(buf.toString('hex'), '68656c6c6f20776f726c64')
+      })
+
+      it('decodes a string from hex', () => {
+        let buf = Buffer.from('68656c6c6f20776f726c64', 'hex')
+        assertBuffer(buf, HELLO_WORLD)
+      })
+
+      it('decodes from uppercase hex', () => {
+        let buf = Buffer.from('CAFE', 'hex')
+        assertBuffer(buf, [0xca, 0xfe])
+      })
+
+      it('converts to and from hex', () => {
+        for (let i = 0; i < 100; i++) {
+          let bytes = randomBytes(200)
+          let buf = Buffer.from(bytes)
+
+          let str = buf.toString('hex')
+          assert.equal(str.length, 2 * buf.length)
+          assert.match(str, /^[0-9a-f]*$/)
+
+          let parsed = Buffer.from(str, 'hex')
           assertBuffer(parsed, bytes)
         }
       })
@@ -127,6 +158,6 @@ function spec (name, { Buffer }) {
 }
 
 if (typeof Buffer !== 'undefined') {
-  spec('native', { Buffer })
+  spec('native', Buffer)
 }
 spec('shim', require('../lib/buffer'))
