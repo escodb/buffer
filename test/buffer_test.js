@@ -154,10 +154,105 @@ function spec (name, Buffer) {
         }
       })
     })
+
+    describe('copy()', () => {
+      let source = Buffer.from([0x12, 0x34, 0x56, 0x78, 0x9a])
+
+      it('copies the source to the start of the target', () => {
+        let target = Buffer.alloc(8)
+        source.copy(target)
+        assertBuffer(target, [0x12, 0x34, 0x56, 0x78, 0x9a, 0, 0, 0])
+      })
+
+      it('copies the source to a non-zero offset', () => {
+        let target = Buffer.alloc(8)
+        source.copy(target, 2)
+        assertBuffer(target, [0, 0, 0x12, 0x34, 0x56, 0x78, 0x9a, 0])
+      })
+
+      it('copies the source near the end of the target', () => {
+        let target = Buffer.alloc(8)
+        source.copy(target, 5)
+        assertBuffer(target, [0, 0, 0, 0, 0, 0x12, 0x34, 0x56])
+      })
+
+      it('copies a source to a smaller target', () => {
+        let target = Buffer.alloc(3)
+        source.copy(target)
+        assertBuffer(target, [0x12, 0x34, 0x56])
+      })
+
+      it('copies a source to a smaller target with an offset', () => {
+        let target = Buffer.alloc(3)
+        source.copy(target, 2)
+        assertBuffer(target, [0, 0, 0x12])
+      })
+
+      it('copies a slice of the source', () => {
+        let target = Buffer.alloc(8)
+        source.copy(target, 0, 0, 3)
+        source.copy(target, 5, 2, 4)
+        assertBuffer(target, [0x12, 0x34, 0x56, 0, 0, 0x56, 0x78, 0])
+      })
+
+      it('fails to copy before the start of the target', () => {
+        let target = Buffer.alloc(8)
+        assert.throws(() => source.copy(target, -1))
+      })
+
+      it('copies past the end of the target', () => {
+        let target = Buffer.alloc(8)
+        source.copy(target, 10)
+        assertBuffer(target, [0, 0, 0, 0, 0, 0, 0, 0])
+      })
+
+      it('fails to copy starting past the end of the source', () => {
+        let target = Buffer.alloc(8)
+        assert.throws(() => source.copy(target, 0, 6))
+      })
+
+      it('copies ending past the end of the source', () => {
+        let target = Buffer.alloc(8)
+        source.copy(target, 1, 2, 6)
+        assertBuffer(target, [0, 0x56, 0x78, 0x9a, 0, 0, 0, 0])
+      })
+
+      it('copies when the source offsets are not ordered', () => {
+        let target = Buffer.alloc(8)
+        source.copy(target, 1, 4, 2)
+        assertBuffer(target, [0, 0, 0, 0, 0, 0, 0, 0])
+      })
+    })
+
+    describe('concat()', () => {
+      let inputs = [
+        Buffer.from([0x12, 0x34]),
+        Buffer.alloc(0),
+        Buffer.from([0x56, 0x78, 0x9a]),
+        Buffer.from([0xbc])
+      ]
+
+      it('concatenates several buffers', () => {
+        let out = Buffer.concat(inputs)
+        assertBuffer(out, [0x12, 0x34, 0x56, 0x78, 0x9a, 0xbc])
+      })
+
+      it('sets a different output length', () => {
+        let out = Buffer.concat(inputs, 8)
+        assertBuffer(out, [0x12, 0x34, 0x56, 0x78, 0x9a, 0xbc, 0, 0])
+      })
+
+      it('sets a short output length', () => {
+        let out = Buffer.concat(inputs, 3)
+        assertBuffer(out, [0x12, 0x34, 0x56])
+      })
+    })
   })
 }
 
-if (typeof Buffer !== 'undefined') {
-  spec('native', Buffer)
+if (typeof process !== 'undefined' && typeof Buffer !== 'undefined') {
+  let version = process.version.match(/\d+/g).map((n) => parseInt(n, 10))
+  if (version[0] >= 18) spec('native', Buffer)
 }
+
 spec('shim', require('../lib/buffer'))
