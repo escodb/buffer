@@ -247,6 +247,132 @@ function spec (name, Buffer) {
         assertBuffer(out, [0x12, 0x34, 0x56])
       })
     })
+
+    describe('writeInt()', () => {
+      it('writes an IntXBE', () => {
+        let buf = Buffer.alloc(12)
+
+        buf.writeInt8(0x56)
+        assertBuffer(buf, [0x56, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+
+        buf.writeInt8(-0x56)
+        assertBuffer(buf, [0xaa, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+
+        buf.writeInt16BE(0x1234)
+        assertBuffer(buf, [0x12, 0x34, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+
+        buf.writeInt16BE(-0x1234)
+        assertBuffer(buf, [0xed, 0xcc, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+
+        buf.writeInt32BE(0x12345678)
+        assertBuffer(buf, [0x12, 0x34, 0x56, 0x78, 0, 0, 0, 0, 0, 0, 0, 0])
+
+        buf.writeInt32BE(-0x12345678)
+        assertBuffer(buf, [0xed, 0xcb, 0xa9, 0x88, 0, 0, 0, 0, 0, 0, 0, 0])
+
+        buf.writeBigInt64BE(0x123456789abcdef0n)
+        assertBuffer(buf, [0x12, 0x34, 0x56, 0x78, 0x9a, 0xbc, 0xde, 0xf0, 0, 0, 0, 0])
+
+        buf.writeBigInt64BE(-0x123456789abcdef0n)
+        assertBuffer(buf, [0xed, 0xcb, 0xa9, 0x87, 0x65, 0x43, 0x21, 0x10, 0, 0, 0, 0])
+      })
+
+      it('writes a UIntXBE', () => {
+        let buf = Buffer.alloc(12)
+
+        buf.writeUInt8(0x56)
+        assertBuffer(buf, [0x56, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+
+        buf.writeUInt16BE(0x1234)
+        assertBuffer(buf, [0x12, 0x34, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+
+        buf.writeUInt32BE(0x12345678)
+        assertBuffer(buf, [0x12, 0x34, 0x56, 0x78, 0, 0, 0, 0, 0, 0, 0, 0])
+
+        buf.writeBigUInt64BE(0x123456789abcdef0n)
+        assertBuffer(buf, [0x12, 0x34, 0x56, 0x78, 0x9a, 0xbc, 0xde, 0xf0, 0, 0, 0, 0])
+      })
+
+      it('writes an IntXLE', () => {
+        let buf = Buffer.alloc(12)
+
+        buf.writeInt8(0x56)
+        assertBuffer(buf, [0x56, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+
+        buf.writeInt8(-0x56)
+        assertBuffer(buf, [0xaa, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+
+        buf.writeInt16LE(0x1234)
+        assertBuffer(buf, [0x34, 0x12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+
+        buf.writeInt16LE(-0x1234)
+        assertBuffer(buf, [0xcc, 0xed, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+
+        buf.writeInt32LE(0x12345678)
+        assertBuffer(buf, [0x78, 0x56, 0x34, 0x12, 0, 0, 0, 0, 0, 0, 0, 0])
+
+        buf.writeInt32LE(-0x12345678)
+        assertBuffer(buf, [0x88, 0xa9, 0xcb, 0xed, 0, 0, 0, 0, 0, 0, 0, 0])
+
+        buf.writeBigInt64LE(0x123456789abcdef0n)
+        assertBuffer(buf, [0xf0, 0xde, 0xbc, 0x9a, 0x78, 0x56, 0x34, 0x12, 0, 0, 0, 0])
+
+        buf.writeBigInt64LE(-0x123456789abcdef0n)
+        assertBuffer(buf, [0x10, 0x21, 0x43, 0x65, 0x87, 0xa9, 0xcb, 0xed, 0, 0, 0, 0])
+      })
+
+      it('writes a UIntXLE', () => {
+        let buf = Buffer.alloc(12)
+
+        buf.writeUInt8(0x56)
+        assertBuffer(buf, [0x56, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+
+        buf.writeUInt16LE(0x1234)
+        assertBuffer(buf, [0x34, 0x12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+
+        buf.writeUInt32LE(0x12345678)
+        assertBuffer(buf, [0x78, 0x56, 0x34, 0x12, 0, 0, 0, 0, 0, 0, 0, 0])
+
+        buf.writeBigUInt64LE(0x123456789abcdef0n)
+        assertBuffer(buf, [0xf0, 0xde, 0xbc, 0x9a, 0x78, 0x56, 0x34, 0x12, 0, 0, 0, 0])
+      })
+
+      it('writes at an offset', () => {
+        let buf = Buffer.alloc(6)
+        buf.writeUInt32BE(0x12345678, 2)
+        assertBuffer(buf, [0, 0, 0x12, 0x34, 0x56, 0x78])
+      })
+
+      it('fails to write past the end of the buffer', () => {
+        let buf = Buffer.alloc(6)
+        assert.throws(() => buf.writeUInt32BE(0x12345678, 3))
+      })
+    })
+
+    describe('readInt()', () => {
+      let buf = Buffer.from([0x12, 0x34, 0x56, 0x78, 0x9a, 0xbc, 0xde, 0xf0, 0x11, 0x22])
+
+      it('reads a UIntXBE', () => {
+        assert.equal(buf.readUInt8(), 0x12)
+        assert.equal(buf.readUInt16BE(), 0x1234)
+        assert.equal(buf.readUInt32BE(), 0x12345678)
+        assert.equal(buf.readBigUInt64BE(), 0x123456789abcdef0n)
+      })
+
+      it('reads a UIntXBE at an offset', () => {
+        assert.equal(buf.readUInt8(2), 0x56)
+        assert.equal(buf.readUInt16BE(3), 0x789a)
+        assert.equal(buf.readUInt32BE(1), 0x3456789a)
+        assert.equal(buf.readBigUInt64BE(2), 0x56789abcdef01122n)
+      })
+
+      it('reads a UIntXLE', () => {
+        assert.equal(buf.readUInt8(), 0x12)
+        assert.equal(buf.readUInt16LE(), 0x3412)
+        assert.equal(buf.readUInt32LE(), 0x78563412)
+        assert.equal(buf.readBigUInt64LE(), 0xf0debc9a78563412n)
+      })
+    })
   })
 }
 
