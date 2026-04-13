@@ -381,4 +381,4 @@ if (typeof process !== 'undefined' && typeof Buffer !== 'undefined') {
   if (version[0] >= 18) spec('native', Buffer)
 }
 
-spec('shim', require('../lib/buffer'))
+spec('shim', require('../lib/buffer').Buffer)

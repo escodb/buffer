@@ -7,7 +7,7 @@
     "mocha": "^9.2.2"
   },
   "scripts": {
-    "build": "esbuild --watch --bundle test/browser/main.js --outfile=test/browser/bundle.js",
-    "test": "mocha"
+    "test": "mocha",
+    "test:web": "esbuild --bundle test/web/main.js --outfile=test/web/bundle.js --watch --servedir=."
   }
 }
