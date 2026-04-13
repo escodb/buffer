@@ -1,6 +1,11 @@
 {
   "name": "@escodb/buffer",
   "license": "Apache-2.0",
+  "files": [
+    "lib"
+  ],
+  "main": "./lib/node_buffer",
+  "browser": "./lib/web_buffer",
   "devDependencies": {
     "chai": "^4.5.0",
     "esbuild": "^0.27.2",
