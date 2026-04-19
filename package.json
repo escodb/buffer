@@ -6,6 +6,9 @@
   ],
   "main": "./lib/node_buffer",
   "browser": "./lib/web_buffer",
+  "dependencies": {
+    "@escodb/buffer-codec": "github:escodb/buffer-codec"
+  },
   "devDependencies": {
     "chai": "^4.5.0",
     "esbuild": "^0.27.2",
