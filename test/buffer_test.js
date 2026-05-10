@@ -137,7 +137,7 @@ function spec (name, Buffer) {
         buf.writeUInt8(0x56)
         assertBuffer(buf, [0x56, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
 
-        buf.writeUInt16BE(0x1234)
+        buf.writeUint16BE(0x1234)
         assertBuffer(buf, [0x12, 0x34, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
 
         buf.writeUInt32BE(0x12345678)
