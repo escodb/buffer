@@ -9,6 +9,28 @@ function assertBuffer (buf, bytes) {
 
 function spec (name, Buffer) {
   describe(`Buffer: ${name}`, () => {
+    describe('alloc()', () => {
+      it('returns a buffer of the given size', () => {
+        let buf = Buffer.alloc(12)
+        assert.equal(buf.length, 12)
+      })
+
+      it('throws an error with a non-size argument', () => {
+        assert.throws(() => Buffer.alloc('12'))
+      })
+    })
+
+    describe('from()', () => {
+      it('returns a buffer decoded from the content', () => {
+        let buf = Buffer.from('abcd', 'hex')
+        assertBuffer(buf, [0xab, 0xcd])
+      })
+
+      it('throws an error with a non-content argument', () => {
+        assert.throws(() => Buffer.from(12))
+      })
+    })
+
     describe('copy()', () => {
       let source = Buffer.from([0x12, 0x34, 0x56, 0x78, 0x9a])
 
