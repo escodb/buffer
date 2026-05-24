@@ -1,6 +1,16 @@
 {
   "name": "@escodb/buffer",
+  "version": "0.1.0",
+  "description": "Browser-compatible implementation of the Node.js Buffer API",
+  "author": "James Coglan <jcoglan@gmail.com> (http://jcoglan.com/)",
+  "keywords": [
+    "typed array",
+    "buffer"
+  ],
   "license": "Apache-2.0",
+  "homepage": "https://github.com/escodb/buffer",
+  "repository": "github:escodb/buffer",
+  "bugs": "https://github.com/escodb/buffer/issues",
   "files": [
     "lib"
   ],
