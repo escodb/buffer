@@ -2,12 +2,12 @@
 
 const { assert } = require('chai')
 
-function assertBuffer (buf, bytes) {
-  assert.equal(buf.length, bytes.length)
-  assert(bytes.every((b, i) => b === buf[i]))
-}
-
 function spec (name, Buffer) {
+  function assertBuffer (buf, bytes) {
+    assert(buf instanceof Buffer)
+    assert(buf.equals(Buffer.from(bytes)))
+  }
+
   describe(`Buffer: ${name}`, () => {
     describe('alloc()', () => {
       it('returns a buffer of the given size', () => {
@@ -121,6 +121,38 @@ function spec (name, Buffer) {
       it('sets a short output length', () => {
         let out = Buffer.concat(inputs, 3)
         assertBuffer(out, [0x12, 0x34, 0x56])
+      })
+    })
+
+    describe('compare()', () => {
+      it('sorts a prefix before a longer buffer', () => {
+        let a = Buffer.from([0x12, 0x34])
+        let b = Buffer.from([0x12, 0x34, 0x56])
+        assert.equal(a.compare(b), -1)
+      })
+
+      it('sorts a buffer after a prefix', () => {
+        let a = Buffer.from([0x12, 0x34, 0x56])
+        let b = Buffer.from([0x12, 0x34])
+        assert.equal(a.compare(b), 1)
+      })
+
+      it('sorts a longer buffer before a shorter one', () => {
+        let a = Buffer.from([0x12, 0x34, 0x56])
+        let b = Buffer.from([0x12, 0x35])
+        assert.equal(a.compare(b), -1)
+      })
+
+      it('sorts a shorter buffer before a longer one', () => {
+        let a = Buffer.from([0x12, 0x36, 0x56])
+        let b = Buffer.from([0x12, 0x35])
+        assert.equal(a.compare(b), 1)
+      })
+
+      it('sorts a two equal buffers', () => {
+        let a = Buffer.from([0x12, 0x36, 0x56])
+        let b = Buffer.from([0x12, 0x36, 0x56])
+        assert.equal(a.compare(b), 0)
       })
     })
 
