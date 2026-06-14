@@ -226,13 +226,25 @@ function spec (name, Buffer) {
     })
 
     describe('readInt()', () => {
-      let buf = Buffer.from([0x12, 0x34, 0x56, 0x78, 0x9a, 0xbc, 0xde, 0xf0, 0x11, 0x22])
+      let buf = Buffer.from([0x12, 0x34, 0x56, 0x78, 0x9a, 0xbc, 0xde, 0xf0, 0x11, 0x22, 0x33, 0x44])
 
       it('reads a UIntXBE', () => {
         assert.equal(buf.readUInt8(), 0x12)
         assert.equal(buf.readUInt16BE(), 0x1234)
         assert.equal(buf.readUInt32BE(), 0x12345678)
         assert.equal(buf.readBigUInt64BE(), 0x123456789abcdef0n)
+      })
+
+      it('reads a IntXBE', () => {
+        assert.equal(buf.readInt8(), 0x12)
+        assert.equal(buf.readInt16BE(), 0x1234)
+        assert.equal(buf.readInt32BE(), 0x12345678)
+        assert.equal(buf.readBigInt64BE(), 0x123456789abcdef0n)
+
+        assert.equal(buf.readInt8(4), -102)
+        assert.equal(buf.readInt16BE(4), -25924)
+        assert.equal(buf.readInt32BE(4), -1698898192)
+        assert.equal(buf.readBigInt64BE(4), -7296712173586074812n)
       })
 
       it('reads a UIntXBE at an offset', () => {
