@@ -156,6 +156,26 @@ function spec (name, Buffer) {
       })
     })
 
+    describe('isBuffer()', () => {
+      it('returns true for buffers', () => {
+        assert.isTrue(Buffer.isBuffer(Buffer.from('hello')))
+      })
+
+      it('returns false for non-buffers', () => {
+        assert.isFalse(Buffer.isBuffer('hello'))
+      })
+    })
+
+    describe('isEncoding()', () => {
+      it('returns true for known encodings', () => {
+        assert.isTrue(Buffer.isEncoding('hex'))
+      })
+
+      it('returns false for unknown encodings', () => {
+        assert.isFalse(Buffer.isEncoding('curse'))
+      })
+    })
+
     describe('writeInt()', () => {
       it('writes an IntXBE', () => {
         let buf = Buffer.alloc(12)
