@@ -217,6 +217,9 @@ function spec (name, Buffer) {
         assert.equal(buf.writeUInt32BE(0x12345678), 4)
         assertBuffer(buf, [0x12, 0x34, 0x56, 0x78, 0, 0, 0, 0, 0, 0, 0, 0])
 
+        assert.equal(buf.writeUInt32BE(0xaa345678), 4)
+        assertBuffer(buf, [0xaa, 0x34, 0x56, 0x78, 0, 0, 0, 0, 0, 0, 0, 0])
+
         assert.equal(buf.writeBigUInt64BE(0x123456789abcdef0n), 8)
         assertBuffer(buf, [0x12, 0x34, 0x56, 0x78, 0x9a, 0xbc, 0xde, 0xf0, 0, 0, 0, 0])
       })
@@ -302,7 +305,7 @@ function spec (name, Buffer) {
       it('reads a UIntXBE at an offset', () => {
         assert.equal(buf.readUInt8(2), 0x56)
         assert.equal(buf.readUInt16BE(3), 0x789a)
-        assert.equal(buf.readUInt32BE(1), 0x3456789a)
+        assert.equal(buf.readUInt32BE(4), 0x9abcdef0)
         assert.equal(buf.readBigUInt64BE(2), 0x56789abcdef01122n)
       })
 
@@ -311,6 +314,18 @@ function spec (name, Buffer) {
         assert.equal(buf.readUInt16LE(), 0x3412)
         assert.equal(buf.readUInt32LE(), 0x78563412)
         assert.equal(buf.readBigUInt64LE(), 0xf0debc9a78563412n)
+      })
+
+      it('reads an unsized UIntBE', () => {
+        assert.equal(buf.readUIntBE(4, 1), 0x9a)
+        assert.equal(buf.readUIntBE(4, 2), 0x9abc)
+        assert.equal(buf.readUIntBE(4, 4), 0x9abcdef0)
+      })
+
+      it('reads an unsized IntBE', () => {
+        assert.equal(buf.readIntBE(4, 1), -102)
+        assert.equal(buf.readIntBE(4, 2), -25924)
+        assert.equal(buf.readIntBE(4, 4), -1698898192)
       })
     })
   })

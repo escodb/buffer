@@ -26,8 +26,15 @@ const { Buffer } = require('@escodb/buffer')
 This will return the native `Buffer` class on Node.js, and our own
 implementation in browser environments.
 
-The following `Buffer` methods are implemented, and the supported encodings are
-`base64`, `hex` and `utf8`.
+The `Buffer` methods listed below are implemented, and should work identically
+to their Node.js versions with the following known caveats:
+
+- The supported encodings are `base64`, `hex` and `utf8`, and no others.
+- The `readIntBE()`, `readIntLE()`, `readUIntBE()`, `readUIntLE()`,
+  `writeIntBE()`, `writeIntLE()`, `writeUIntBE()` and `writeUIntLE()` methods
+  accept a maximum `byteLength` value of 4.
+
+Supported methods:
 
 - `Buffer.alloc(size)`
 - `Buffer.compare(buf1, buf2)`
@@ -47,11 +54,15 @@ The following `Buffer` methods are implemented, and the supported encodings are
 - `buf.readInt32BE([offset])`
 - `buf.readInt32LE([offset])`
 - `buf.readInt8([offset])`
+- `buf.readIntBE(offset, byteLength)`
+- `buf.readIntLE(offset, byteLength)`
 - `buf.readUInt16BE([offset])`
 - `buf.readUInt16LE([offset])`
 - `buf.readUInt32BE([offset])`
 - `buf.readUInt32LE([offset])`
 - `buf.readUInt8([offset])`
+- `buf.readUIntBE(offset, byteLength)`
+- `buf.readUIntLE(offset, byteLength)`
 - `buf.toString([encoding])`
 - `buf.writeBigInt64BE(value[, offset])`
 - `buf.writeBigInt64LE(value[, offset])`
@@ -62,8 +73,12 @@ The following `Buffer` methods are implemented, and the supported encodings are
 - `buf.writeInt32BE(value[, offset])`
 - `buf.writeInt32LE(value[, offset])`
 - `buf.writeInt8(value[, offset])`
+- `buf.writeIntBE(value, offset, byteLength)`
+- `buf.writeIntLE(value, offset, byteLength)`
 - `buf.writeUInt16BE(value[, offset])`
 - `buf.writeUInt16LE(value[, offset])`
 - `buf.writeUInt32BE(value[, offset])`
 - `buf.writeUInt32LE(value[, offset])`
 - `buf.writeUInt8(value[, offset])`
+- `buf.writeUIntBE(value, offset, byteLength)`
+- `buf.writeUIntLE(value, offset, byteLength)`
